@@ -1,0 +1,22 @@
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node
+node_modules/
+package-lock.json
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

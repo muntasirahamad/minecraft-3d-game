@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft 3D Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 100;
+            max-width: 300px;
+        }
+
+        #inventory {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .block-item {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #888;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .block-item:hover {
+            border-color: #fff;
+            transform: scale(1.1);
+        }
+
+        .block-item.selected {
+            border-color: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        #stats {
+            margin-bottom: 15px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .crosshair-center {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 200px;
+        }
+
+        .control-item {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #0052a3;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 200;
+            display: none;
+            max-width: 400px;
+        }
+
+        #message h2 {
+            margin-bottom: 15px;
+            color: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div id="crosshair">
+        <div class="crosshair-center"></div>
+    </div>
+
+    <div id="ui">
+        <div id="stats">
+            <div>Position: <span id="pos">0, 0, 0</span></div>
+            <div>Blocks Placed: <span id="placed">0</span></div>
+            <div>Blocks Destroyed: <span id="destroyed">0</span></div>
+            <div>FPS: <span id="fps">60</span></div>
+        </div>
+        <button onclick="saveWorld()">💾 Save World</button>
+        <button onclick="loadWorld()">📂 Load World</button>
+        <button onclick="clearWorld()">🗑️ Clear World</button>
+    </div>
+
+    <div id="inventory">
+        <div class="block-item selected" data-block="grass" onclick="selectBlock(this, 'grass')">🟩 Grass</div>
+        <div class="block-item" data-block="dirt" onclick="selectBlock(this, 'dirt')">🟫 Dirt</div>
+        <div class="block-item" data-block="stone" onclick="selectBlock(this, 'stone')">⬜ Stone</div>
+        <div class="block-item" data-block="wood" onclick="selectBlock(this, 'wood')">🟨 Wood</div>
+        <div class="block-item" data-block="sand" onclick="selectBlock(this, 'sand')">🟡 Sand</div>
+    </div>
+
+    <div id="controls">
+        <div class="control-item"><strong>Controls:</strong></div>
+        <div class="control-item">W/A/S/D - Move</div>
+        <div class="control-item">Space - Jump</div>
+        <div class="control-item">Shift - Down</div>
+        <div class="control-item">Left Click - Place</div>
+        <div class="control-item">Right Click - Destroy</div>
+        <div class="control-item">Scroll - Change Block</div>
+    </div>
+
+    <div id="message">
+        <h2 id="messageTitle">Welcome!</h2>
+        <p id="messageText">Start building your world!</p>
+        <button onclick="document.getElementById('message').style.display='none'">Close</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
